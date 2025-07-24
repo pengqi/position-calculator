@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>专业级仓位计算器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-bar">
+            <div class="app-title">
+                <div class="app-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h1>专业级仓位计算器</h1>
+            </div>
+        </header>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 参数输入卡片 -->
+            <div class="card">
+                <div class="section-title">
+                    <i class="fas fa-sliders-h"></i>
+                    <h2>交易参数设置</h2>
+                </div>
+                
+                <!-- 模式切换 -->
+                <div class="mode-switcher">
+                    <button class="mode-btn active" data-mode="percent">
+                        <i class="fas fa-percent"></i> 百分比模式
+                    </button>
+                    <button class="mode-btn" data-mode="fixed">
+                        <i class="fas fa-yen-sign"></i> 固定金额模式
+                    </button>
+                </div>
+                
+                <div class="input-container">
+                    <div class="input-group">
+                        <label for="capital"><i class="fas fa-wallet"></i> 账户总资金 (元)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-yen-sign input-icon"></i>
+                            <input type="number" id="capital" placeholder="例如: 100000" value="100000">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="entry-price"><i class="fas fa-chart-line"></i> 当前价格 (元)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-dollar-sign input-icon"></i>
+                            <input type="number" id="entry-price" placeholder="例如: 3.200" step="0.001" value="3.200">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="stop-loss"><i class="fas fa-shield-alt"></i> 止损价格 (元)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-arrow-down input-icon"></i>
+                            <input type="number" id="stop-loss" placeholder="例如: 3.000" step="0.001" value="3.000">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="target-price"><i class="fas fa-bullseye"></i> 目标价格 (元)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-arrow-up input-icon"></i>
+                            <input type="number" id="target-price" placeholder="例如: 3.600" step="0.001" value="3.600">
+                        </div>
+                    </div>
+                    
+                    <!-- 百分比模式输入 -->
+                    <div class="input-group" id="percent-input">
+                        <label for="risk-percent">
+                            <i class="fas fa-exclamation-triangle"></i> 风险比例 (%)
+                            <span class="info-tooltip">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">每笔交易愿意承担的资金风险比例</span>
+                            </span>
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-percent input-icon"></i>
+                            <input type="number" id="risk-percent" placeholder="例如: 1" value="1" min="0.1" step="0.1">
+                        </div>
+                    </div>
+                    
+                    <!-- 固定金额模式输入 -->
+                    <div class="input-group" id="fixed-input" style="display: none;">
+                        <label for="fixed-risk">
+                            <i class="fas fa-yen-sign"></i> 固定风险 (元)
+                            <span class="info-tooltip">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="tooltip-text">每笔交易愿意承担的资金损失金额</span>
+                            </span>
+                        </label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-exclamation input-icon"></i>
+                            <input type="number" id="fixed-risk" placeholder="例如: 1000" value="1000">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" id="calculate-btn">
+                    <i class="fas fa-calculator"></i> 计算仓位
+                </button>
+            </div>
+            
+            <!-- 计算结果卡片 -->
+            <div class="card" id="results-card" style="display: none;">
+                <div class="section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    <h2>计算结果</h2>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3><i class="fas fa-exclamation-triangle risk-color"></i> 风险比</h3>
+                        <div class="result-value risk-color" id="risk-ratio">0%</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-trophy reward-color"></i> 盈利比</h3>
+                        <div class="result-value reward-color" id="reward-ratio">0%</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3><i class="fas fa-balance-scale ratio-color"></i> 盈亏比</h3>
+                        <div class="result-value ratio-color" id="rr-ratio">0:1</div>
+                    </div>
+                </div>
+                
+                <div class="position-advice">
+                    <h3><i class="fas fa-lightbulb"></i> 仓位建议</h3>
+                    
+                    <div class="position-details">
+                        <div class="position-row">
+                            <span><i class="fas fa-box-open"></i> 建议买入股数:</span>
+                            <strong id="position-shares">0</strong>
+                        </div>
+                        <div class="position-row">
+                            <span><i class="fas fa-money-bill-wave"></i> 占用资金:</span>
+                            <strong id="position-cost">0 元</strong>
+                        </div>
+                        <div class="position-row">
+                            <span><i class="fas fa-percentage"></i> 仓位占比:</span>
+                            <strong id="position-percent">0%</strong>
+                            <span class="risk-badge risk-low" id="risk-level">低风险</span>
+                        </div>
+                        
+                        <!-- 仓位占比进度条 -->
+                        <div class="position-progress">
+                            <div class="progress-bar" id="position-progress-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="position-details" style="background: rgba(25, 40, 65, 0.7);">
+                        <div class="position-row">
+                            <span><i class="fas fa-brain kelly-color"></i> 凯利公式建议:</span>
+                            <strong class="kelly-color" id="kelly-percent">0%</strong>
+                        </div>
+                        <div class="kelly-note">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>凯利公式说明：</strong> 采用保守计算方式（40%胜率估计，并在标准凯利公式基础上打8折）
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="position-advice" style="background: rgba(30, 45, 70, 0.7);">
+                    <h3><i class="fas fa-table"></i> 风险等级参考</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th>仓位占比</th>
+                            <th>风险等级</th>
+                            <th>说明</th>
+                        </tr>
+                        <tr>
+                            <td>≤ 10%</td>
+                            <td><span class="risk-badge risk-low">低风险</span></td>
+                            <td>保守交易，适合初学者</td>
+                        </tr>
+                        <tr>
+                            <td>11% - 20%</td>
+                            <td><span class="risk-badge risk-moderate">中风险</span></td>
+                            <td>平衡策略，适合有经验交易者</td>
+                        </tr>
+                        <tr>
+                            <td>≥ 21%</td>
+                            <td><span class="risk-badge risk-high">高风险</span></td>
+                            <td>激进策略，需谨慎操作</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 历史记录卡片 -->
+            <div class="card" id="history-card">
+                <div class="section-title">
+                    <i class="fas fa-history"></i>
+                    <h2>历史记录</h2>
+                </div>
+                
+                <div class="history-header">
+                    <p>最近计算记录 (最多保存10条)</p>
+                    <button class="btn btn-secondary" id="clear-history-btn">
+                        <i class="fas fa-trash-alt"></i> 清除记录
+                    </button>
+                </div>
+                
+                <div class="history-list" id="history-list">
+                    <div class="empty-history" id="empty-history">
+                        <i class="fas fa-history fa-2x"></i>
+                        <p>暂无历史记录</p>
+                        <p>计算仓位后将在此显示历史记录</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
