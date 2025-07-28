@@ -43,7 +43,7 @@
                         <label for="capital"><i class="fas fa-wallet"></i> 账户总资金 (元)</label>
                         <div class="input-wrapper">
                             <i class="fas fa-yen-sign input-icon"></i>
-                            <input type="number" id="capital" placeholder="例如: 100000" value="100000">
+                            <input type="number" id="capital" placeholder="例如: 100000">
                         </div>
                     </div>
                     
@@ -51,7 +51,7 @@
                         <label for="entry-price"><i class="fas fa-chart-line"></i> 当前价格 (元)</label>
                         <div class="input-wrapper">
                             <i class="fas fa-dollar-sign input-icon"></i>
-                            <input type="number" id="entry-price" placeholder="例如: 3.200" step="0.001" value="3.200">
+                            <input type="number" id="entry-price" placeholder="例如: 3.200" step="0.001">
                         </div>
                     </div>
                     
@@ -59,7 +59,7 @@
                         <label for="stop-loss"><i class="fas fa-shield-alt"></i> 止损价格 (元)</label>
                         <div class="input-wrapper">
                             <i class="fas fa-arrow-down input-icon"></i>
-                            <input type="number" id="stop-loss" placeholder="例如: 3.000" step="0.001" value="3.000">
+                            <input type="number" id="stop-loss" placeholder="例如: 3.000" step="0.001">
                         </div>
                     </div>
                     
@@ -67,7 +67,7 @@
                         <label for="target-price"><i class="fas fa-bullseye"></i> 目标价格 (元)</label>
                         <div class="input-wrapper">
                             <i class="fas fa-arrow-up input-icon"></i>
-                            <input type="number" id="target-price" placeholder="例如: 3.600" step="0.001" value="3.600">
+                            <input type="number" id="target-price" placeholder="例如: 3.600" step="0.001">
                         </div>
                     </div>
                     
@@ -82,7 +82,7 @@
                         </label>
                         <div class="input-wrapper">
                             <i class="fas fa-percent input-icon"></i>
-                            <input type="number" id="risk-percent" placeholder="例如: 1" value="1" min="0.1" step="0.1">
+                            <input type="number" id="risk-percent" placeholder="例如: 1" min="0.1" step="0.1">
                         </div>
                     </div>
                     
@@ -97,7 +97,7 @@
                         </label>
                         <div class="input-wrapper">
                             <i class="fas fa-exclamation input-icon"></i>
-                            <input type="number" id="fixed-risk" placeholder="例如: 1000" value="1000">
+                            <input type="number" id="fixed-risk" placeholder="例如: 1000">
                         </div>
                     </div>
                 </div>
@@ -154,6 +154,7 @@
                             <div class="progress-bar" id="position-progress-bar"></div>
                         </div>
                     </div>
+
 										                    
 										<!-- 在index.html的results-card部分，修改凯利公式部分如下 -->
 										<div class="position-advice">
@@ -187,7 +188,7 @@
 										    </div>
 										</div>
                 
-                <div class="position-advice" style="background: rgba(30, 45, 70, 0.7);">
+                <div class="position-advice">
                     <h3><i class="fas fa-table"></i> 风险等级参考</h3>
                     <table class="info-table">
                         <tr>

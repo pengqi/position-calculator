@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             positionPercent = Math.min((positionResult.cost / capital * 100), 100).toFixed(1);
         }
         
-
+<<<<<<< HEAD
         // 计算凯利公式仓位
         const kellyPercent = parseFloat(kellyValue);
         const kellyCost = capital * kellyPercent / 100;
@@ -308,18 +308,23 @@ document.addEventListener('DOMContentLoaded', function() {
             entry,
             stop,
             target,
-
+=======
+        // 更新UI
+        updateResults({
+>>>>>>> 00f8b57b5f79eff58864cd7fe439c5b8eb94b04a
             riskRatio,
             rewardRatio,
             rrRatio,
             kellyValue,
             positionResult,
-
+<<<<<<< HEAD
             positionPercent,
             kellyShares,
             kellyCost,
             kellyPositionPercent
-
+=======
+            positionPercent
+>>>>>>> 00f8b57b5f79eff58864cd7fe439c5b8eb94b04a
         });
         
         // 添加到历史记录
@@ -337,14 +342,21 @@ document.addEventListener('DOMContentLoaded', function() {
             kellyValue,
             riskRatio,
             rewardRatio,
-
+<<<<<<< HEAD
             rrRatio,
             kellyShares,
             kellyCost,
             kellyPositionPercent
         });
         
-
+=======
+            rrRatio
+        });
+        
+        // 保存当前输入数据
+        saveCurrentData();
+        
+>>>>>>> 00f8b57b5f79eff58864cd7fe439c5b8eb94b04a
         // 显示结果卡片
         resultsCard.style.display = 'block';
         resultsCard.classList.add('fade-in');
@@ -353,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 添加到历史记录
     function addToHistory(data) {
-
+<<<<<<< HEAD
         // 验证数据
         if (!data || typeof data !== 'object') {
             console.error('无效的历史记录数据');
@@ -361,7 +373,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 创建历史记录对象
-
+=======
+>>>>>>> 00f8b57b5f79eff58864cd7fe439c5b8eb94b04a
         const historyItem = {
             timestamp: new Date().getTime(),
             capital: data.capital || 0,
@@ -377,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
             kellyValue: data.kellyValue || '0',
             riskRatio: data.riskRatio || '0',
             rewardRatio: data.rewardRatio || '0',
-
+<<<<<<< HEAD
             rrRatio: data.rrRatio || '0',
             kellyShares: data.kellyShares || 0,
             kellyCost: data.kellyCost || 0,
@@ -388,14 +401,21 @@ document.addEventListener('DOMContentLoaded', function() {
         history.unshift(historyItem);
         
         // 只保留最近10条记录
+=======
+            rrRatio: data.rrRatio || '0'
+        };
 
+        history.unshift(historyItem);
+        
+>>>>>>> 00f8b57b5f79eff58864cd7fe439c5b8eb94b04a
         if (history.length > 10) {
             history.pop();
         }
         
-
+<<<<<<< HEAD
         // 保存并渲染历史记录
-
+=======
+>>>>>>> 00f8b57b5f79eff58864cd7fe439c5b8eb94b04a
         saveHistory();
         renderHistory();
     }
