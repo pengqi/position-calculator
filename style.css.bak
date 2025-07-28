@@ -500,3 +500,21 @@ html, body {
 .progress-low { background: var(--success); }
 .progress-moderate { background: var(--warning); }
 .progress-high { background: var(--danger); }
+
+/* 在style.css中添加 */
+.kelly-position {
+    border-left: 4px solid #bb86fc;
+    margin-top: 25px;
+}
+
+.kelly-position h3 {
+    color: #bb86fc;
+}
+
+.kelly-progress {
+    background: rgba(187, 134, 252, 0.2);
+}
+
+.kelly-progress .progress-bar {
+    background: #bb86fc;
+}

@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const kellyPercentEl = document.getElementById('kelly-percent');
     const progressBar = document.getElementById('position-progress-bar');
     
+    // 凯利公式结果元素
+    const kellySharesEl = document.getElementById('kelly-shares');
+    const kellyCostEl = document.getElementById('kelly-cost');
+    const kellyRiskLevelEl = document.getElementById('kelly-risk-level');
+    const kellyProgressBar = document.getElementById('kelly-progress-bar');
+    
     // 历史记录数组
     let history = [];
     
@@ -150,9 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 计算按钮点击事件 - 添加错误处理
     calculateBtn.addEventListener('click', function() {
-
         try {
-    	calculatePosition();
+            calculatePosition();
         } catch (error) {
             console.error('计算出错:', error);
             alert('计算过程中发生错误: ' + error.message);
@@ -160,165 +165,183 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // 核心计算函数
-		function calculatePosition() {
-		    // 获取输入值
-		    const capital = parseFloat(capitalInput.value);
-		    const entry = parseFloat(entryInput.value);
-		    const stop = parseFloat(stopInput.value);
-		    const target = parseFloat(targetInput.value);
-		    const mode = document.querySelector('.mode-btn.active').dataset.mode;
-		    
-		    // 验证输入
-		    if (isNaN(capital) || capital <= 0) {
-		        alert('请输入有效的账户总资金（必须大于0）');
-		        capitalInput.focus();
-		        return;
-		    }
-		    
-		    if (isNaN(entry) || entry <= 0) {
-		        alert('请输入有效的当前价格（必须大于0）');
-		        entryInput.focus();
-		        return;
-		    }
-		    
-		    if (isNaN(stop) || stop <= 0) {
-		        alert('请输入有效的止损价格（必须大于0）');
-		        stopInput.focus();
-		        return;
-		    }
-		    
-		    if (isNaN(target) || target <= 0) {
-		        alert('请输入有效的目标价格（必须大于0）');
-		        targetInput.focus();
-		        return;
-		    }
-		    
-		    if (stop >= entry) {
-		        alert('止损价必须小于当前价格');
-		        stopInput.focus();
-		        return;
-		    }
-		    
-		    if (target <= entry) {
-		        alert('目标价格必须大于当前价格');
-		        targetInput.focus();
-		        return;
-		    }
-		    
-		    // 计算风险比和盈利比
-		    const riskRatio = ((entry - stop) / entry * 100).toFixed(2);
-		    const rewardRatio = ((target - entry) / entry * 100).toFixed(2);
-		    const rrRatio = (rewardRatio / riskRatio).toFixed(2);
-		    
-		    // 计算凯利值 (40%胜率)
-		    const kellyValue = calculateKelly(riskRatio, rewardRatio, 0.4);
-		    
-		    // 计算建议仓位
-		    let positionResult = null;
-		    if (mode === 'percent') {
-		        const riskPercent = parseFloat(riskPercentInput.value) || 1;
-		        if (isNaN(riskPercent) || riskPercent <= 0) {
-		            alert('请输入有效的风险比例（必须大于0）');
-		            riskPercentInput.focus();
-		            return;
-		        }
-		        positionResult = calculatePercentMode(capital, entry, stop, riskPercent);
-		    } else {
-		        const fixedRisk = parseFloat(fixedRiskInput.value) || 1000;
-		        if (isNaN(fixedRisk) || fixedRisk <= 0) {
-		            alert('请输入有效的固定风险金额（必须大于0）');
-		            fixedRiskInput.focus();
-		            return;
-		        }
-		        positionResult = calculateFixedMode(entry, stop, fixedRisk);
-		    }
-		    
-		    // 验证计算结果
-		    if (!positionResult || isNaN(positionResult.shares) || isNaN(positionResult.cost)) {
-		        alert('计算错误：无法确定仓位大小，请检查输入值');
-		        return;
-		    }
-		    
-		    // 计算仓位占比
-		    let positionPercent = '0';
-		    if (capital > 0) {
-		        positionPercent = Math.min((positionResult.cost / capital * 100), 100).toFixed(1);
-		    }
-		    
-		    // 更新UI
-		    updateResults({
-		        riskRatio,
-		        rewardRatio,
-		        rrRatio,
-		        kellyValue,
-		        positionResult,
-		        positionPercent
-		    });
-		    
-		    // 添加到历史记录
-		    addToHistory({
-		        capital,
-		        entry,
-		        stop,
-		        target,
-		        mode,
-		        riskPercent: mode === 'percent' ? parseFloat(riskPercentInput.value) : null,
-		        fixedRisk: mode === 'fixed' ? parseFloat(fixedRiskInput.value) : null,
-		        shares: positionResult.shares,
-		        cost: positionResult.cost,
-		        positionPercent,
-		        kellyValue,
-		        riskRatio,
-		        rewardRatio,
-		        rrRatio
-		    });
-		    
-		    // 显示结果卡片
-		    resultsCard.style.display = 'block';
-		    resultsCard.classList.add('fade-in');
-		    resultsCard.scrollIntoView({ behavior: 'smooth' });
-		}
+    function calculatePosition() {
+        // 获取输入值
+        const capital = parseFloat(capitalInput.value);
+        const entry = parseFloat(entryInput.value);
+        const stop = parseFloat(stopInput.value);
+        const target = parseFloat(targetInput.value);
+        const mode = document.querySelector('.mode-btn.active').dataset.mode;
+        
+        // 验证输入
+        if (isNaN(capital) || capital <= 0) {
+            alert('请输入有效的账户总资金（必须大于0）');
+            capitalInput.focus();
+            return;
+        }
+        
+        if (isNaN(entry) || entry <= 0) {
+            alert('请输入有效的当前价格（必须大于0）');
+            entryInput.focus();
+            return;
+        }
+        
+        if (isNaN(stop) || stop <= 0) {
+            alert('请输入有效的止损价格（必须大于0）');
+            stopInput.focus();
+            return;
+        }
+        
+        if (isNaN(target) || target <= 0) {
+            alert('请输入有效的目标价格（必须大于0）');
+            targetInput.focus();
+            return;
+        }
+        
+        if (stop >= entry) {
+            alert('止损价必须小于当前价格');
+            stopInput.focus();
+            return;
+        }
+        
+        if (target <= entry) {
+            alert('目标价格必须大于当前价格');
+            targetInput.focus();
+            return;
+        }
+        
+        // 计算风险比和盈利比
+        const riskRatio = ((entry - stop) / entry * 100).toFixed(2);
+        const rewardRatio = ((target - entry) / entry * 100).toFixed(2);
+        const rrRatio = (rewardRatio / riskRatio).toFixed(2);
+        
+        // 计算凯利值 (40%胜率)
+        const kellyValue = calculateKelly(riskRatio, rewardRatio, 0.4);
+        
+        // 计算建议仓位
+        let positionResult = null;
+        if (mode === 'percent') {
+            const riskPercent = parseFloat(riskPercentInput.value) || 1;
+            if (isNaN(riskPercent) || riskPercent <= 0) {
+                alert('请输入有效的风险比例（必须大于0）');
+                riskPercentInput.focus();
+                return;
+            }
+            positionResult = calculatePercentMode(capital, entry, stop, riskPercent);
+        } else {
+            const fixedRisk = parseFloat(fixedRiskInput.value) || 1000;
+            if (isNaN(fixedRisk) || fixedRisk <= 0) {
+                alert('请输入有效的固定风险金额（必须大于0）');
+                fixedRiskInput.focus();
+                return;
+            }
+            positionResult = calculateFixedMode(entry, stop, fixedRisk);
+        }
+        
+        // 验证计算结果
+        if (!positionResult || isNaN(positionResult.shares) || isNaN(positionResult.cost)) {
+            alert('计算错误：无法确定仓位大小，请检查输入值');
+            return;
+        }
+        
+        // 计算仓位占比
+        let positionPercent = '0';
+        if (capital > 0) {
+            positionPercent = Math.min((positionResult.cost / capital * 100), 100).toFixed(1);
+        }
+        
+        // 计算凯利公式仓位
+        const kellyPercent = parseFloat(kellyValue);
+        const kellyCost = capital * kellyPercent / 100;
+        const kellyShares = Math.floor(kellyCost / entry);
+        const kellyPositionPercent = (kellyCost / capital * 100).toFixed(1);
+        
+        // 更新UI
+        updateResults({
+            capital,
+            entry,
+            stop,
+            target,
+            riskRatio,
+            rewardRatio,
+            rrRatio,
+            kellyValue,
+            positionResult,
+            positionPercent,
+            kellyShares,
+            kellyCost,
+            kellyPositionPercent
+        });
+        
+        // 添加到历史记录
+        addToHistory({
+            capital,
+            entry,
+            stop,
+            target,
+            mode,
+            riskPercent: mode === 'percent' ? parseFloat(riskPercentInput.value) : null,
+            fixedRisk: mode === 'fixed' ? parseFloat(fixedRiskInput.value) : null,
+            shares: positionResult.shares,
+            cost: positionResult.cost,
+            positionPercent,
+            kellyValue,
+            riskRatio,
+            rewardRatio,
+            rrRatio,
+            kellyShares,
+            kellyCost,
+            kellyPositionPercent
+        });
+        
+        // 显示结果卡片
+        resultsCard.style.display = 'block';
+        resultsCard.classList.add('fade-in');
+        resultsCard.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // 添加到历史记录
+    function addToHistory(data) {
+        // 验证数据
+        if (!data || typeof data !== 'object') {
+            console.error('无效的历史记录数据');
+            return;
+        }
 
-		// 添加到历史记录
-		function addToHistory(data) {
-		    // 验证数据
-		    if (!data || typeof data !== 'object') {
-		        console.error('无效的历史记录数据');
-		        return;
-		    }
+        // 创建历史记录对象
+        const historyItem = {
+            timestamp: new Date().getTime(),
+            capital: data.capital || 0,
+            entry: data.entry || 0,
+            stop: data.stop || 0,
+            target: data.target || 0,
+            mode: data.mode || 'percent',
+            riskPercent: data.riskPercent || null,
+            fixedRisk: data.fixedRisk || null,
+            shares: data.shares || 0,
+            cost: data.cost || 0,
+            positionPercent: data.positionPercent || '0',
+            kellyValue: data.kellyValue || '0',
+            riskRatio: data.riskRatio || '0',
+            rewardRatio: data.rewardRatio || '0',
+            rrRatio: data.rrRatio || '0',
+            kellyShares: data.kellyShares || 0,
+            kellyCost: data.kellyCost || 0,
+            kellyPositionPercent: data.kellyPositionPercent || '0'
+        };
 
-		    // 创建历史记录对象
-		    const historyItem = {
-		        timestamp: new Date().getTime(),
-		        capital: data.capital || 0,
-		        entry: data.entry || 0,
-		        stop: data.stop || 0,
-		        target: data.target || 0,
-		        mode: data.mode || 'percent',
-		        riskPercent: data.riskPercent || null,
-		        fixedRisk: data.fixedRisk || null,
-		        shares: data.shares || 0,
-		        cost: data.cost || 0,
-		        positionPercent: data.positionPercent || '0',
-		        kellyValue: data.kellyValue || '0',
-		        riskRatio: data.riskRatio || '0',
-		        rewardRatio: data.rewardRatio || '0',
-		        rrRatio: data.rrRatio || '0'
-		    };
-
-		    // 添加到历史记录数组开头
-		    history.unshift(historyItem);
-		    
-		    // 只保留最近10条记录
-		    if (history.length > 10) {
-		        history.pop();
-		    }
-		    
-		    // 保存并渲染历史记录
-		    saveHistory();
-		    renderHistory();
-		}
-
+        // 添加到历史记录数组开头
+        history.unshift(historyItem);
+        
+        // 只保留最近10条记录
+        if (history.length > 10) {
+            history.pop();
+        }
+        
+        // 保存并渲染历史记录
+        saveHistory();
+        renderHistory();
+    }
     
     // 百分比模式计算
     function calculatePercentMode(capital, entry, stop, riskPercent) {
@@ -388,6 +411,25 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             progressBar.className = 'progress-bar progress-high';
         }
+        
+        // 更新凯利公式结果
+        kellySharesEl.textContent = data.kellyShares.toLocaleString();
+        kellyCostEl.textContent = formatCurrency(data.kellyCost);
+        
+        // 更新凯利公式风险等级
+        updateKellyRiskLevel(data.kellyPositionPercent);
+        
+        // 更新凯利公式进度条
+        const kellyPercent = Math.min(parseFloat(data.kellyPositionPercent), 30);
+        kellyProgressBar.style.width = `${kellyPercent * 3.33}%`;
+        
+        if (kellyPercent < 10) {
+            kellyProgressBar.className = 'progress-bar progress-low';
+        } else if (kellyPercent < 20) {
+            kellyProgressBar.className = 'progress-bar progress-moderate';
+        } else {
+            kellyProgressBar.className = 'progress-bar progress-high';
+        }
     }
     
     // 更新风险等级显示
@@ -405,6 +447,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         riskLevelEl.className = 'risk-badge risk-' + level;
         riskLevelEl.textContent = text;
+    }
+    
+    // 更新凯利公式风险等级显示
+    function updateKellyRiskLevel(percent) {
+        let level = 'low';
+        let text = '低风险';
+        
+        if (percent >= 20) {
+            level = 'high';
+            text = '高风险';
+        } else if (percent >= 10) {
+            level = 'moderate';
+            text = '中风险';
+        }
+        
+        kellyRiskLevelEl.className = 'risk-badge risk-' + level;
+        kellyRiskLevelEl.textContent = text;
     }
     
     // 格式化货币

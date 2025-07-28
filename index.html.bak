@@ -154,38 +154,18 @@
                             <div class="progress-bar" id="position-progress-bar"></div>
                         </div>
                     </div>
-										                    
-										<!-- 在index.html的results-card部分，修改凯利公式部分如下 -->
-										<div class="position-advice">
-										    <h3><i class="fas fa-brain kelly-color"></i> 凯利公式建议</h3>
-										    <div class="position-details">
-										        <div class="position-row">
-										            <span><i class="fas fa-box-open"></i> 建议买入股数:</span>
-										            <strong id="kelly-shares">0</strong>
-										        </div>
-										        <div class="position-row">
-										            <span><i class="fas fa-money-bill-wave"></i> 占用资金:</span>
-										            <strong id="kelly-cost">0 元</strong>
-										        </div>
-										        <div class="position-row">
-										            <span><i class="fas fa-percentage"></i> 仓位占比:</span>
-										            <strong id="kelly-percent">0%</strong>
-										            <span class="risk-badge" id="kelly-risk-level">低风险</span>
-										        </div>
-										        
-										        <!-- 仓位占比进度条 -->
-										        <div class="position-progress">
-										            <div class="progress-bar" id="kelly-progress-bar"></div>
-										        </div>
-										    </div>
-										    
-										    <div class="kelly-note">
-										        <i class="fas fa-info-circle"></i> 
-										        <strong>凯利公式说明：</strong> 
-										        采用保守计算方式（40%胜率估计，并在标准凯利公式基础上打5折）。
-										        建议仓位占比不超过30%，即使公式计算结果更高。
-										    </div>
-										</div>
+                    
+                    <div class="position-details" style="background: rgba(25, 40, 65, 0.7);">
+                        <div class="position-row">
+                            <span><i class="fas fa-brain kelly-color"></i> 凯利公式建议:</span>
+                            <strong class="kelly-color" id="kelly-percent">0%</strong>
+                        </div>
+                        <div class="kelly-note">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>凯利公式说明：</strong> 采用保守计算方式（40%胜率估计，并在标准凯利公式基础上打8折）
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="position-advice" style="background: rgba(30, 45, 70, 0.7);">
                     <h3><i class="fas fa-table"></i> 风险等级参考</h3>
